@@ -8,20 +8,34 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.0.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@storybook/addon-a11y": "^10.2.10",
+    "@storybook/addon-docs": "^10.2.10",
+    "@storybook/addon-vitest": "^10.2.10",
+    "@storybook/react-vite": "^10.2.10",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@vitest/browser-playwright": "^4.0.18",
+    "@vitest/coverage-v8": "^4.0.18",
+    "daisyui": "^5.5.18",
     "eslint": "^9.39.1",
-    "typescript": "5.9.2"
+    "eslint-plugin-storybook": "^10.2.10",
+    "playwright": "^1.58.2",
+    "storybook": "^10.2.10",
+    "typescript": "5.9.2",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
+    "@repo/tailwind-config": "*",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@repo/tailwind-config": "*"
+    "react-dom": "^19.2.0"
   }
 }
