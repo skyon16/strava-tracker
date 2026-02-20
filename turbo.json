@@ -22,6 +22,9 @@
     },
     "build-storybook": {
       "cache": false
+    },
+    "lint-ui": {
+      "cache": false
     }
   }
 }

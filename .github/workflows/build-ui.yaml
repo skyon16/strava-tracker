@@ -1,0 +1,38 @@
+name: Build UI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/ui/**"
+      - "packages/tailwind-config/**"
+      - "packages/typescript-config/**"
+      - ".github/workflows/build-ui.yaml"
+
+jobs:
+  build:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Type check
+        run: yarn check-types --filter=@repo/ui
+
+      - name: Lint
+        run: yarn lint-ui --filter=@repo/ui
+
+      - name: Build Storybook
+        run: yarn build-storybook --filter=@repo/ui
