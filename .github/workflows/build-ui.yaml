@@ -31,5 +31,8 @@ jobs:
       - name: Type check
         run: yarn check-types --filter=@repo/ui
 
+      - name: Lint
+        run: yarn lint-ui --filter=@repo/ui
+
       - name: Build Storybook
         run: yarn build-storybook --filter=@repo/ui
