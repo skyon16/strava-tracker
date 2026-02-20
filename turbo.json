@@ -16,6 +16,12 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "storybook": {
+      "cache": false
+    },
+    "build-storybook": {
+      "cache": false
     }
   }
 }
