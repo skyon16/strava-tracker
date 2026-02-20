@@ -37,5 +37,8 @@
     "@repo/tailwind-config": "*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
+  },
+  "resolutions": {
+    "vite": "7.3.1"
   }
 }
