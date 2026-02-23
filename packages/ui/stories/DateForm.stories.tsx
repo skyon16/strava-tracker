@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/react";
 import React from "react";
-import { DateForm, DateFormMessages } from "../src/components/DateForm";
+import { DateForm, DateFormMessages } from "../components/DateForm";
 
 const dateFormMessages: DateFormMessages = {
   category: "Workout Category",

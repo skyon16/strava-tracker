@@ -13,11 +13,7 @@ function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }
 const config: StorybookConfig = {
-  stories: [
-    "../src/**/*.mdx",
-    "../stories/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-  ],
+  stories: ["../stories/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),
     getAbsolutePath("@storybook/addon-vitest"),

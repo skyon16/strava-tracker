@@ -1,7 +1,7 @@
 import type { Meta } from "@storybook/react-vite";
 
-import { Schedule } from "../src/components/Schedule";
-import { DateFormMessages } from "../src/components/DateForm";
+import { Schedule } from "../components/Schedule";
+import { DateFormMessages } from "../components/DateForm";
 import { WorkoutCategories } from "@repo/utilities";
 
 const workoutCategories = [
