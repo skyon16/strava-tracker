@@ -15,6 +15,8 @@ const validateUrl = (url: string): string => {
       console.warn("Warning: BFF URL should use HTTPS in production");
     }
     return url;
+    // no logging setup,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     throw new Error(`Invalid BFF_URL format: ${url}`);
   }

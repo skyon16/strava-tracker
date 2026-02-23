@@ -12,30 +12,32 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "express": "^5.0.1",
-    "helmet": "^8.0.0",
+    "axios": "^1.7.9",
+    "connect-redis": "^7.1.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
+    "dotenv": "^16.4.7",
+    "express": "^5.0.1",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
-    "connect-redis": "^7.1.1",
+    "helmet": "^8.0.0",
     "redis": "^4.7.0",
-    "dotenv": "^16.4.7",
-    "axios": "^1.7.9",
-    "zod": "^3.24.1",
-    "cookie-parser": "^1.4.7"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
     "@repo/eslint-config": "*",
-    "@types/express": "^5.0.0",
+    "@repo/typescript-config": "*",
     "@types/cookie-parser": "^1.4.7",
-    "@types/express-session": "^1.18.0",
     "@types/cors": "^2.8.17",
-    "@types/node": "^22.15.3",
+    "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
+    "@types/node": "^25.3.0",
+    "eslint": "^9.39.2",
+    "globals": "^16.5.0",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "5.9.2",
-    "tsc-alias": "^1.8.10",
     "vitest": "^4.0.18"
   }
 }
