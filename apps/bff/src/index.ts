@@ -13,6 +13,10 @@ import { apiRouter } from "./routes/api.routes.js";
 
 const app = express();
 
+if (env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 app.use(
   helmet({
     contentSecurityPolicy: {
