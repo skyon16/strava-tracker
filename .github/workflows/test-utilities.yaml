@@ -41,16 +41,3 @@ jobs:
 
       - name: Run tests
         run: yarn test --filter=@repo/utilities
-
-      - name: Generate coverage
-        run: yarn test:coverage --filter=@repo/utilities
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./packages/utilities/coverage/coverage-final.json
-          flags: utilities
-          name: utilities-coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: true
