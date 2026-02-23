@@ -1,8 +1,17 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@repo/utilities": ["../utilities/src/index.ts"]
+    },
+    "outDir": "dist",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
-  "include": ["src"],
+  "include": ["src", "stories/Scheduler.stories.tsx", "stories/DateForm.stories.tsx"],
   "exclude": ["node_modules", "dist"]
 }

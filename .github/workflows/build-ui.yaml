@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "packages/ui/**"
+      - "packages/utilities/**"
       - "packages/tailwind-config/**"
       - "packages/typescript-config/**"
       - ".github/workflows/build-ui.yaml"
@@ -14,6 +15,8 @@ jobs:
   build:
     name: Build Storybook
     runs-on: ubuntu-latest
+    env:
+      TURBO_FORCE: true
 
     steps:
       - name: Checkout
@@ -23,13 +26,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 25
-          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build utilities
+        run: yarn build --filter=@repo/utilities
+
       - name: Type check
-        run: yarn check-types --filter=@repo/ui
+        run: yarn check-types
 
       - name: Lint
         run: yarn lint-ui --filter=@repo/ui
