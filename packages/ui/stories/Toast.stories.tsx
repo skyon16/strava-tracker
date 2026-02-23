@@ -1,7 +1,7 @@
-import {MyToastRegion, queue} from '../src/Toast';
-import {Button} from '../src/Button';
-import {Meta, StoryObj} from '@storybook/react';
-import React from 'react';
+import { MyToastRegion, queue } from "../src/Toast";
+import { Button } from "../src/Aria-Button";
+import { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 
 interface ToastStoryArgs {
   title: string;
@@ -11,34 +11,34 @@ interface ToastStoryArgs {
 }
 
 const meta: Meta<ToastStoryArgs> = {
-  title: 'Toast',
+  title: "Toast",
   parameters: {
-    layout: 'centered'
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     title: {
-      control: 'text',
-      description: 'The title of the toast.'
+      control: "text",
+      description: "The title of the toast.",
     },
     description: {
-      control: 'text',
-      description: 'Optional description text.'
+      control: "text",
+      description: "Optional description text.",
     },
     timeout: {
-      control: 'number',
-      description: 'Auto-dismiss timeout in milliseconds.'
+      control: "number",
+      description: "Auto-dismiss timeout in milliseconds.",
     },
     buttonLabel: {
-      control: 'text',
-      description: 'Label for the trigger button.'
-    }
+      control: "text",
+      description: "Label for the trigger button.",
+    },
   },
   args: {
-    title: 'Files uploaded',
-    description: '3 files uploaded successfully.',
-    buttonLabel: 'Show toast'
-  }
+    title: "Files uploaded",
+    description: "3 files uploaded successfully.",
+    buttonLabel: "Show toast",
+  },
 };
 
 export default meta;
@@ -48,10 +48,14 @@ export const Example: Story = {
   render: (args) => (
     <>
       <MyToastRegion />
-      <Button onPress={() => queue.add(
-        {title: args.title, description: args.description},
-        args.timeout ? {timeout: args.timeout} : undefined
-      )}>
+      <Button
+        onPress={() =>
+          queue.add(
+            { title: args.title, description: args.description },
+            args.timeout ? { timeout: args.timeout } : undefined,
+          )
+        }
+      >
         {args.buttonLabel}
       </Button>
     </>
@@ -109,8 +113,8 @@ function MyToast(props: ToastProps<MyToastContent>) {
     {args.buttonLabel}
   </Button>
 </>`;
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 };
