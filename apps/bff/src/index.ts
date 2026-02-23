@@ -36,7 +36,7 @@ app.use(
     origin: env.FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token", "X-XSRF-Token"],
   }),
 );
 
@@ -92,7 +92,7 @@ const setupSession = async () => {
         secure: env.NODE_ENV === "production",
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 30,
-        sameSite: env.NODE_ENV === "production" ? "strict" : "lax",
+        sameSite: env.NODE_ENV === "production" ? "none" : "lax",
       },
     }),
   );
