@@ -12,7 +12,14 @@ authRouter.get("/strava", (req: Request, res: Response) => {
   const csrfToken = crypto.randomBytes(32).toString("hex");
   req.session.csrf = csrfToken;
   const authUrl = stravaService.getAuthorizationUrl(csrfToken);
-  res.redirect(authUrl);
+
+  req.session.save((err) => {
+    if (err) {
+      console.error("Session save error:", err);
+      return res.redirect(`${env.FRONTEND_URL}?error=session_error`);
+    }
+    res.redirect(authUrl);
+  });
 });
 
 authRouter.get("/strava/callback", async (req: Request, res: Response) => {
