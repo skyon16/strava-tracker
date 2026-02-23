@@ -30,7 +30,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Type check
-        run: yarn check-types --filter=@repo/ui
+        run: yarn check-types
 
       - name: Lint
         run: yarn lint-ui --filter=@repo/ui
