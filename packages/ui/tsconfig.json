@@ -6,8 +6,10 @@
       "@/*": ["./*"]
     },
     "outDir": "dist",
-    "module": "esnext",
-    "moduleResolution": "bundler"
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src", "stories/Scheduler.stories.tsx", "stories/DateForm.stories.tsx"],
   "exclude": ["node_modules", "dist"]
