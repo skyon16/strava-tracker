@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@repo/utilities": ["../utilities/src/index.ts"]
     },
     "outDir": "dist",
     "module": "es2022",
