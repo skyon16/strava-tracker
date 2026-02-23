@@ -57,7 +57,7 @@ export function DisclosureHeader({ children }: DisclosureHeaderProps) {
         slot="trigger"
         variant="quiet"
         className="w-full justify-start font-medium">
-        {({isDisabled}) => (
+        {({isDisabled}: {isDisabled?: boolean}) => (
           <>
             <ChevronRight aria-hidden className={chevron({ isExpanded, isDisabled })} />
             <span>{children}</span>

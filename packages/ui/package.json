@@ -18,7 +18,7 @@
     "@chromatic-com/storybook": "^5.0.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
-    "@repo/utilities": "",
+    "@repo/utilities": "*",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/addon-docs": "^10.2.10",
     "@storybook/addon-vitest": "^10.2.10",

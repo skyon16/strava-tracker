@@ -26,9 +26,11 @@ export default meta;
 
 export const Example = (args: any) => (
   <DateForm
-    onSubmit={() => null}
+    onChange={() => {}}
     messages={dateFormMessages}
-    selectedDate={new Date()}
+    endDateTime={new Date()}
+    startDateTime={new Date()}
+    workoutCategories={[{ id: 1, label: "run" }]}
   />
 );
 
