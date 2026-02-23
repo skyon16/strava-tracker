@@ -1,54 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { useStrava } from "./hooks/useStrava";
+import { StravaLogin } from "./components/StravaLogin";
+import { AthleteProfile } from "./components/AthleteProfile";
+import { ActivitiesList } from "./components/ActivitiesList";
+import "./App.css";
+import { TextField } from "@repo/ui/TextField";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    isAuthenticated,
+    isLoading,
+    athlete,
+    activities,
+    error,
+    login,
+    logout,
+    fetchAthlete,
+    fetchActivities,
+  } = useStrava();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchAthlete();
+    }
+  }, [isAuthenticated, fetchAthlete]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <StravaLogin onLogin={login} />;
+  }
 
   return (
-    <div className="w-full mx-auto p-8 text-center justify-center" >
-      <div className="flex row justify-center">
-        <a
-          href="https://vite.dev"
-          target="_blank"
-          className="font-medium text-[#646cff] no-underline hover:text-[#535bf2]"
-        >
-          <img
-            src={viteLogo}
-            className="logo h-24 p-6 [will-change:filter] transition-[filter] duration-300 hover:[filter:drop-shadow(0_0_2em_#646cffaa)]"
-            alt="Vite logo"
-          />
-        </a>
-        <a
-          href="https://react.dev"
-          target="_blank"
-          className="font-medium text-[#646cff] no-underline hover:text-[#535bf2]"
-        >
-          <img
-            src={reactLogo}
-            className="logo react h-24 p-6 [will-change:filter] transition-[filter] duration-300 hover:[filter:drop-shadow(0_0_2em_#61dafbaa)]"
-            alt="React logo"
-          />
-        </a>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="max-w-6xl mx-auto px-4 flex flex-col gap-6">
+        {error && (
+          <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {athlete && <AthleteProfile athlete={athlete} onLogout={logout} />}
+        <TextField>Schedule Component coming Soon</TextField>
+        <ActivitiesList
+          activities={activities}
+          onFetchActivities={fetchActivities}
+        />
       </div>
-      <h1 className="text-[3.2em] leading-[1.1]">Vite + React</h1>
-      <div className="p-8">
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          className="rounded-lg border border-transparent px-[1.2em] py-[0.6em] text-base font-medium font-[inherit] bg-[#1a1a1a] cursor-pointer transition-[border-color] duration-300 hover:border-[#646cff] focus:outline-none focus-visible:outline-4 focus-visible:outline-auto"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="text-[#888]">
-        Click on the Vite and React logos to learn more
-      </p>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
