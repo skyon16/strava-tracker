@@ -9,6 +9,6 @@
     "module": "esnext",
     "moduleResolution": "bundler"
   },
-  "include": ["src"],
+  "include": ["src", "stories/Scheduler.stories.tsx", "stories/DateForm.stories.tsx"],
   "exclude": ["node_modules", "dist"]
 }
