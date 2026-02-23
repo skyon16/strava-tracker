@@ -1,0 +1,36 @@
+name: Build Web
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/web/**"
+      - "packages/ui/**"
+      - "packages/tailwind-config/**"
+      - "packages/typescript-config/**"
+      - ".github/workflows/build-web.yaml"
+
+jobs:
+  build:
+    name: Build Web App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint --filter=web
+
+      - name: Build
+        run: yarn build --filter=web

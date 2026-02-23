@@ -1,0 +1,43 @@
+name: Test Utilities
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/utilities/**"
+      - "packages/typescript-config/**"
+      - ".github/workflows/test-utilities.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/utilities/**"
+      - "packages/typescript-config/**"
+
+jobs:
+  test:
+    name: Test Utilities Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 25
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Type check
+        run: yarn check-types --filter=@repo/utilities
+
+      - name: Lint
+        run: yarn lint --filter=@repo/utilities
+
+      - name: Run tests
+        run: yarn test --filter=@repo/utilities
