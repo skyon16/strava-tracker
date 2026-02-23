@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "packages/ui/**"
+      - "packages/utilities/**"
       - "packages/tailwind-config/**"
       - "packages/typescript-config/**"
       - ".github/workflows/build-ui.yaml"
@@ -28,6 +29,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Build utilities
+        run: yarn build --filter=@repo/utilities
 
       - name: Type check
         run: yarn check-types
