@@ -2,12 +2,12 @@ import { Card, CardContent } from "@repo/ui/card";
 
 interface Athlete {
   id: number;
-  username: string;
+  username: string | null;
   firstname: string;
   lastname: string;
-  city: string;
-  state: string;
-  country: string;
+  city: string | null;
+  state: string | null;
+  country: string | null;
   profile: string;
   profile_medium: string;
 }

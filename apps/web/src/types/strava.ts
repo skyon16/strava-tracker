@@ -10,13 +10,13 @@ export const CsrfTokenSchema = z.object({
 
 export const AthleteSchema = z.object({
   id: z.number(),
-  username: z.string(),
+  username: z.string().nullable(),
   firstname: z.string(),
   lastname: z.string(),
-  city: z.string(),
-  state: z.string(),
-  country: z.string(),
-  sex: z.string(),
+  city: z.string().nullable(),
+  state: z.string().nullable(),
+  country: z.string().nullable(),
+  sex: z.string().nullable(),
   profile: z.string(),
   profile_medium: z.string(),
   created_at: z.string(),
