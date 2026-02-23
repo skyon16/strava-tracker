@@ -49,4 +49,9 @@ const parseEnv = () => {
   }
 };
 
-export const env = parseEnv();
+const rawEnv = parseEnv();
+
+export const env = {
+  ...rawEnv,
+  CORS_ORIGIN: new URL(rawEnv.FRONTEND_URL).origin,
+};

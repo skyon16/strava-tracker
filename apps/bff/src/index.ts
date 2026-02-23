@@ -33,7 +33,7 @@ app.use(
 
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: env.CORS_ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: [
@@ -42,6 +42,7 @@ app.use(
       "X-CSRF-Token",
       "X-XSRF-Token",
     ],
+    exposedHeaders: ["Set-Cookie"],
   }),
 );
 
