@@ -1,5 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "storybook/test";
+import type { Meta } from "@storybook/react-vite";
 
 import { Schedule } from "../components/Schedule";
 import { DateFormMessages } from "../components/DateForm";

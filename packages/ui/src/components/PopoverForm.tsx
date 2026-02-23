@@ -32,7 +32,7 @@ export const PopoverDateForm = ({
   return (
     <DialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
       {/* need z index set. the schedule component has zindex for events and table. */}
-      <ModalOverlay className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center z-100">
+      <ModalOverlay className="fixed inset-0 z-100 bg-black/50 flex items-center justify-center">
         <Modal className="bg-white dark:bg-neutral-900 rounded-xl shadow-2xl p-6 w-full max-w-2xl ">
           <Dialog className="outline-none">
             <DateForm messages={dateFormMessages} {...rest} />
