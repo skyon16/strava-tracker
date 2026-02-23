@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
-import {
-  TextField as AriaTextField,
+import { TextField as AriaTextField } from "react-aria-components";
+import type {
   TextFieldProps as AriaTextFieldProps,
   ValidationResult,
 } from "react-aria-components";
