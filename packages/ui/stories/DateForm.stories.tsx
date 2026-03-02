@@ -5,11 +5,8 @@ import { DateForm, DateFormMessages } from "../src/components/DateForm";
 const dateFormMessages: DateFormMessages = {
   category: "Workout Category",
   endDate: "End Date",
-  endTime: "End Time",
   startDate: "Start Date",
-  startTime: "Start Time",
   title: "Title",
-  checkboxLabel: "Repeat",
   color: "Color",
   submit: "Submit",
 };
