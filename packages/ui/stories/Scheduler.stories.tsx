@@ -3,6 +3,8 @@ import type { Meta } from "@storybook/react-vite";
 import { Schedule } from "../src/components/Schedule";
 import { DateFormMessages } from "../src/components/DateForm";
 import { WorkoutCategories } from "@repo/utilities";
+import { useState } from "react";
+import { SchedulerExistingEvent } from "@cubedoodl/react-simple-scheduler";
 
 const workoutCategories = [
   { id: WorkoutCategories.Run, label: "Run" },
@@ -12,11 +14,8 @@ const workoutCategories = [
 const dateFormMessages: DateFormMessages = {
   category: "Workout Category",
   endDate: "End Date",
-  endTime: "End Time",
   startDate: "Start Date",
-  startTime: "Start Time",
   title: "Title",
-  checkboxLabel: "Repeat",
   color: "Color",
   submit: "Submit",
 };
@@ -31,9 +30,14 @@ const meta = {
 
 export default meta;
 
-export const Default = () => (
-  <Schedule
-    workoutCategories={workoutCategories}
-    dateFormMessages={dateFormMessages}
-  />
-);
+export const Default = () => {
+  const [events, setEvents] = useState<SchedulerExistingEvent[]>([]);
+  return (
+    <Schedule
+      workoutCategories={workoutCategories}
+      dateFormMessages={dateFormMessages}
+      events={events}
+      setEvents={setEvents as (events: SchedulerExistingEvent[]) => void}
+    />
+  );
+};

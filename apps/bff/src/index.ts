@@ -2,14 +2,13 @@ import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import csrf from "csurf";
+import csrf from "tiny-csrf";
 import session from "express-session";
 import rateLimit from "express-rate-limit";
-import { createClient } from "redis";
-import RedisStore from "connect-redis";
 import { env } from "./config/env.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { apiRouter } from "./routes/api.routes.js";
+import { eventsRouter } from "./routes/events.routes.js";
 
 const app = express();
 
@@ -56,40 +55,24 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
+  skip: () => env.NODE_ENV === "development",
 });
 
 app.use("/api/", limiter);
 app.use("/auth/", limiter);
 
-app.use(express.json({ limit: "100kb" }));
-app.use(express.urlencoded({ extended: true, limit: "100kb" }));
-app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(env.SESSION_SECRET));
+app.use(
+  csrf(
+    env.SESSION_SECRET,
+    env.NODE_ENV === "development" ? [] : ["POST", "PUT", "PATCH", "DELETE"],
+  ),
+);
 
 const setupSession = async () => {
   let store;
-
-  if (env.USE_REDIS_SESSION && env.REDIS_URL) {
-    try {
-      const redisClient = createClient({
-        url: env.REDIS_URL,
-      });
-
-      redisClient.on("error", (err: Error) => {
-        console.error("Redis Client Error:", err);
-      });
-
-      await redisClient.connect();
-      console.log("✅ Connected to Redis for session storage");
-
-      store = new RedisStore({
-        client: redisClient,
-        prefix: "sess:",
-      });
-    } catch (error) {
-      console.error("❌ Failed to connect to Redis:", error);
-      console.log("⚠️  Falling back to memory store");
-    }
-  }
 
   app.use(
     session({
@@ -110,18 +93,6 @@ const setupSession = async () => {
 
 await setupSession();
 
-const csrfProtection = csrf({
-  cookie: false,
-  value: (req: Request) => {
-    return (
-      (req.headers["x-csrf-token"] as string | undefined) ||
-      (req.headers["x-xsrf-token"] as string | undefined) ||
-      req.body?._csrf ||
-      req.query?._csrf
-    );
-  },
-});
-
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.code === "EBADCSRFTOKEN") {
     res.status(403).json({ error: "Invalid CSRF token" });
@@ -140,6 +111,7 @@ app.get("/health", (req: Request, res: Response) => {
 
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
+app.use("/event", eventsRouter);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: "Not found" });
@@ -153,7 +125,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-const PORT = parseInt(env.PORT);
+const PORT = env.PORT;
 
 app.listen(PORT, () => {
   console.log(`

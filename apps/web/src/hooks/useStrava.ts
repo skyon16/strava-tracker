@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { env } from "../config/env";
 import { createErrorMessage } from "../utils/errorHandling";
 import { fetchWithTimeout } from "../utils/fetchWithTimeout";
+import type { SchedulerExistingEvent } from "@cubedoodl/react-simple-scheduler";
 import {
   AuthStatusSchema,
   CsrfTokenSchema,
@@ -11,28 +12,27 @@ import {
   type Activity,
 } from "../types/strava";
 
+const API_TIMEOUT = 30_000;
+
+const apiFetch = (url: string, options: RequestInit = {}) =>
+  fetchWithTimeout(url, { credentials: "include", ...options }, API_TIMEOUT);
+
 export const useStrava = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [athlete, setAthlete] = useState<Athlete | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [events, setEventsState] = useState<SchedulerExistingEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
   const fetchCsrfToken = useCallback(async () => {
     try {
-      const response = await fetchWithTimeout(
-        `${env.BFF_URL}/auth/csrf-token`,
-        { credentials: "include" },
-        30000,
-      );
+      const response = await apiFetch(`${env.BFF_URL}/auth/csrf-token`);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch CSRF token");
-      }
+      if (!response.ok) throw new Error("Failed to fetch CSRF token");
 
-      const rawData = await response.json();
-      const data = CsrfTokenSchema.parse(rawData);
+      const data = CsrfTokenSchema.parse(await response.json());
       setCsrfToken(data.csrfToken);
     } catch (err) {
       console.error("Failed to fetch CSRF token:", err);
@@ -42,19 +42,14 @@ export const useStrava = () => {
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await fetchWithTimeout(
-        `${env.BFF_URL}/auth/status`,
-        { credentials: "include" },
-        30000,
-      );
+      const response = await apiFetch(`${env.BFF_URL}/auth/status`);
 
       if (!response.ok) {
         setIsAuthenticated(false);
         return;
       }
 
-      const rawData = await response.json();
-      const data = AuthStatusSchema.parse(rawData);
+      const data = AuthStatusSchema.parse(await response.json());
       setIsAuthenticated(data.authenticated);
 
       if (data.authenticated) {
@@ -69,29 +64,55 @@ export const useStrava = () => {
     }
   }, [fetchCsrfToken]);
 
+  const ensureCalendarUser = useCallback(
+    async (userId: number) => {
+      const getResponse = await apiFetch(
+        `${env.BFF_URL}/event/events/${userId}`,
+      );
+
+      if (getResponse.ok) {
+        const data = await getResponse.json();
+        if (data?.task?.events) setEventsState(data.task.events);
+        return;
+      }
+
+      if (getResponse.status !== 404) {
+        throw new Error("Failed to check calendar user");
+      }
+
+      if (!csrfToken) throw new Error("Missing CSRF token");
+
+      const createResponse = await apiFetch(`${env.BFF_URL}/event/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ UserID: userId }),
+      });
+
+      if (!createResponse.ok) throw new Error("Failed to create calendar user");
+    },
+    [csrfToken],
+  );
+
   const fetchAthlete = useCallback(async () => {
     if (!isAuthenticated) return;
 
     try {
-      const response = await fetchWithTimeout(
-        `${env.BFF_URL}/api/athlete`,
-        { credentials: "include" },
-        30000,
-      );
+      const response = await apiFetch(`${env.BFF_URL}/api/athlete`);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch athlete data");
-      }
+      if (!response.ok) throw new Error("Failed to fetch athlete data");
 
-      const rawData = await response.json();
-      const data = AthleteSchema.parse(rawData);
+      const data = AthleteSchema.parse(await response.json());
       setAthlete(data);
       setError(null);
+      await ensureCalendarUser(data.id);
     } catch (err) {
       console.error("Failed to fetch athlete:", err);
       setError(createErrorMessage("athlete", err));
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, ensureCalendarUser]);
 
   const fetchActivities = useCallback(
     async (page: number = 1, perPage: number = 30) => {
@@ -104,18 +125,13 @@ export const useStrava = () => {
       );
 
       try {
-        const response = await fetchWithTimeout(
+        const response = await apiFetch(
           `${env.BFF_URL}/api/activities?page=${validPage}&per_page=${validPerPage}`,
-          { credentials: "include" },
-          30000,
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch activities");
-        }
+        if (!response.ok) throw new Error("Failed to fetch activities");
 
-        const rawData = await response.json();
-        const data = ActivitiesSchema.parse(rawData);
+        const data = ActivitiesSchema.parse(await response.json());
         setActivities(data);
         setError(null);
       } catch (err) {
@@ -126,74 +142,93 @@ export const useStrava = () => {
     [isAuthenticated],
   );
 
-  const login = () => {
-    window.location.href = `${env.BFF_URL}/auth/strava`;
-  };
+  const setEvents = useCallback(
+    async (updated: SchedulerExistingEvent[]) => {
+      setEventsState(updated);
+      if (!isAuthenticated || !athlete?.id) return;
+      if (!csrfToken) throw new Error("Missing CSRF token");
 
-  const logout = async () => {
-    try {
-      if (!csrfToken) {
-        throw new Error("Missing CSRF token");
-      }
-
-      const response = await fetchWithTimeout(
-        `${env.BFF_URL}/auth/logout`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "X-CSRF-Token": csrfToken,
+      try {
+        const response = await apiFetch(
+          `${env.BFF_URL}/event/events/${athlete.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": csrfToken,
+            },
+            body: JSON.stringify({ events: updated }),
           },
-        },
-        30000,
-      );
+        );
 
-      if (response.ok) {
-        setIsAuthenticated(false);
-        setAthlete(null);
-        setActivities([]);
-        setCsrfToken(null);
-        setError(null);
-      } else {
+        if (!response.ok) throw new Error("Failed to update events");
+      } catch (err) {
+        console.error("Failed to update events:", err);
+        setError(createErrorMessage("events", err));
+      }
+    },
+    [isAuthenticated, athlete?.id, csrfToken],
+  );
+
+  const login = useCallback(() => {
+    window.location.href = `${env.BFF_URL}/auth/strava`;
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      if (!csrfToken) throw new Error("Missing CSRF token");
+
+      const response = await apiFetch(`${env.BFF_URL}/auth/logout`, {
+        method: "POST",
+        headers: { "X-CSRF-Token": csrfToken },
+      });
+
+      if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Logout failed");
       }
+
+      setIsAuthenticated(false);
+      setAthlete(null);
+      setActivities([]);
+      setEventsState([]);
+      setCsrfToken(null);
+      setError(null);
     } catch (err) {
       console.error("Logout failed:", err);
       setError(createErrorMessage("logout", err));
     }
-  };
+  }, [csrfToken]);
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
+  // Handle OAuth redirect — clean URL params; checkAuth already handles token fetching
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const authSuccess = params.get("auth");
     const authError = params.get("error");
 
-    if (authSuccess === "success") {
-      setIsAuthenticated(true);
-      fetchCsrfToken();
+    if (authSuccess === "success" || authError) {
+      if (authError) {
+        setError(createErrorMessage("auth", authError));
+      }
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-
-    if (authError) {
-      setError(createErrorMessage("auth", authError));
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [fetchCsrfToken]);
+  }, []);
 
   return {
     isAuthenticated,
     isLoading,
     athlete,
     activities,
+    events,
     error,
     login,
     logout,
     fetchAthlete,
     fetchActivities,
+    setEvents,
   };
 };
