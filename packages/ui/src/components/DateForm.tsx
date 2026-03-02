@@ -17,10 +17,7 @@ export type DateFormMessages = {
   category: string;
   startDate: string;
   endDate: string;
-  startTime: string;
-  endTime: string;
   color: string;
-  checkboxLabel: string;
   submit: string;
 };
 

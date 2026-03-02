@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./*": "./src/*.tsx"
+    ".": "./src/index.ts",
+    "./*": "./src/*.tsx",
+    "./components/*": "./src/components/*.tsx",
+    "./utils": "./src/utils.ts"
   },
   "scripts": {
     "lint-ui": "eslint 'src/**/*.{ts,tsx}'",

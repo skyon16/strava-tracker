@@ -5,7 +5,7 @@ A continuation of a college project — connecting the Strava API to track and a
 ## Stack
 
 - **Frontend:** React 19, TypeScript, Vite, Tailwind CSS — hosted on GitHub Pages
-- **Backend (BFF):** Express 5, TypeScript — hosted on Render
+- **Backend (BFF):** Express, TypeScript — hosted on Fly.io
 - **Auth:** Strava OAuth2 with session-based CSRF protection
 - **Monorepo:** Turborepo with Yarn workspaces
 

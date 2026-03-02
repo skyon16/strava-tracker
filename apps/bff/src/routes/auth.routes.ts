@@ -1,10 +1,7 @@
 import { Router, Request, Response } from "express";
 import crypto from "crypto";
-import csrf from "csurf";
 import { stravaService } from "../services/strava.service.js";
 import { env } from "../config/env.js";
-
-const csrfProtection = csrf({ cookie: false });
 
 export const authRouter = Router();
 
@@ -62,7 +59,7 @@ authRouter.get("/strava/callback", async (req: Request, res: Response) => {
   }
 });
 
-authRouter.get("/csrf-token", csrfProtection, (req: Request, res: Response) => {
+authRouter.get("/csrf-token", (req: Request, res: Response) => {
   if (!req.session.tokens) {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -70,7 +67,7 @@ authRouter.get("/csrf-token", csrfProtection, (req: Request, res: Response) => {
   res.json({ csrfToken: token });
 });
 
-authRouter.post("/logout", csrfProtection, (req: Request, res: Response) => {
+authRouter.post("/logout", (req: Request, res: Response) => {
   req.session.destroy((err?: Error) => {
     if (err) {
       console.error("Logout error:", err);
