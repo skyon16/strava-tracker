@@ -43,7 +43,7 @@ export const Schedule = ({
           backgroundColor: color,
         },
       };
-      setEvents([...events, event]);
+      setEvents(!!events?.length ? [...events, event] : [event]);
       setIsPopoverOpen(false);
     },
     [events, setEvents],
@@ -52,7 +52,7 @@ export const Schedule = ({
   return (
     <>
       <Scheduler
-        events={events}
+        events={events ?? []}
         selected={selected}
         setSelected={setSelected}
         onRequestAdd={handleRequestAdd}
