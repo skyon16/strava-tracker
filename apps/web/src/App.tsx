@@ -4,7 +4,17 @@ import { StravaLogin } from "./components/StravaLogin";
 import { AthleteProfile } from "./components/AthleteProfile";
 import { ActivitiesList } from "./components/ActivitiesList";
 import "./App.css";
-import { TextField } from "@repo/ui/TextField";
+import { Schedule } from "@repo/ui";
+
+// switch over to an I18n
+const scheduleMessages = {
+  title: "Event Name",
+  category: "Category",
+  startDate: "Start",
+  endDate: "End",
+  color: "Color",
+  submit: "Submit",
+};
 
 function App() {
   const {
@@ -12,11 +22,13 @@ function App() {
     isLoading,
     athlete,
     activities,
+    events,
     error,
     login,
     logout,
     fetchAthlete,
     fetchActivities,
+    setEvents,
   } = useStrava();
 
   useEffect(() => {
@@ -50,7 +62,12 @@ function App() {
         )}
 
         {athlete && <AthleteProfile athlete={athlete} onLogout={logout} />}
-        <TextField>Schedule Component coming Soon</TextField>
+        <Schedule
+          dateFormMessages={scheduleMessages}
+          workoutCategories={[{ label: "run", id: 1 }]}
+          events={events}
+          setEvents={setEvents}
+        />
         <ActivitiesList
           activities={activities}
           onFetchActivities={fetchActivities}

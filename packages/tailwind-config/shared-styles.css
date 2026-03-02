@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin 'tailwindcss-react-aria-components';
+@plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
 

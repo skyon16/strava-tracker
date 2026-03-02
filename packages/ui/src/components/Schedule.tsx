@@ -10,15 +10,18 @@ import { WorkoutCategories } from "@repo/utilities";
 
 export const Schedule = ({
   dateFormMessages,
+  events,
+  setEvents,
   ...rest
 }: {
   workoutCategories: { label: string; id: WorkoutCategories }[];
   dateFormMessages: DateFormMessages;
+  events?: SchedulerExistingEvent[];
+  setEvents: (events: SchedulerExistingEvent[]) => void;
 }) => {
   const [selected, setSelected] = useState(new Date());
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date>(new Date());
-  const [events, setEvents] = useState<SchedulerExistingEvent[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleRequestAdd = useCallback((evt: SchedulerEvent) => {
@@ -40,16 +43,16 @@ export const Schedule = ({
           backgroundColor: color,
         },
       };
-      setEvents((p) => [...p, event]);
+      setEvents(!!events?.length ? [...events, event] : [event]);
       setIsPopoverOpen(false);
     },
-    [],
+    [events, setEvents],
   );
 
   return (
     <>
       <Scheduler
-        events={events}
+        events={events ?? []}
         selected={selected}
         setSelected={setSelected}
         onRequestAdd={handleRequestAdd}
